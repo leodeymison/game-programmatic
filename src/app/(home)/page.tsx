@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-300">
       <section className="col-span-9 bg-gray-300"></section>
-      <section className="col-span-3 bg-gray-800 rounded-l-2xl">
+      <section className="col-span-3 bg-gray-800">
         <form className="flex flex-col p-4 h-screen">
           <div className="w-full h-full flex">
             <Editor
