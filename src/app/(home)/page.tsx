@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
@@ -5,6 +6,7 @@ import Editor from "@monaco-editor/react";
 import { useState } from "react";
 import { GoDependabot } from "react-icons/go";
 import style from "./style.module.css";
+import ModelPerson from "@/components/person";
 
 export default function football() {
   const [open, setOpen] = useState(false);
@@ -28,8 +30,12 @@ export default function football() {
     <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
       <section className="col-span-9 px-2 flex flex-col justify-center bg-gray-950">
         <div
-          className={`${style.background} bg-gray-50 w-full aspect-[2048/1080] border-4 border-gray-700 rounded-2xl`}
-        ></div>
+          className={`${style.background} bg-gray-50 w-full aspect-[2048/1080] border-4 border-gray-700 rounded-2xl flex`}
+        >
+          <div>
+            <ModelPerson src="/models/person2.glb" />
+          </div>
+        </div>
       </section>
       <section className="col-span-3 bg-gray-800">
         <form className="flex flex-col p-4 h-screen">
