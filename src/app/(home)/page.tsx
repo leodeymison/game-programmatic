@@ -26,7 +26,9 @@ export default function football() {
 
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-300">
-      <section className="col-span-9 bg-gray-300"></section>
+      <section className="col-span-9 bg-gray-300 px-2 flex flex-col justify-center">
+        <div className="bg-gray-50 w-full aspect-[2048/1080] border-4 border-gray-700 rounded-2xl"></div>
+      </section>
       <section className="col-span-3 bg-gray-800">
         <form className="flex flex-col p-4 h-screen">
           <div className="relative w-full">
