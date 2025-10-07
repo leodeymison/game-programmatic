@@ -17,3 +17,9 @@
   background-color: black;
   border-radius: 10px;
 }
+
+.background {
+  background-image: url("/background.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
