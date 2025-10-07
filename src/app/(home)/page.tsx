@@ -1,31 +1,95 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import Editor from '@monaco-editor/react'
+import Editor from "@monaco-editor/react";
+import { useState } from "react";
+import { GoDependabot } from "react-icons/go";
+import style from "./style.module.css";
 
-export default function Home() {
+export default function football() {
+  const [open, setOpen] = useState(false);
+  const [selected, useSelected] = useState({
+    label: "Bot padrão",
+    value: "default",
+  });
+
+  const options = [
+    {
+      label: "Bot padrão",
+      value: "default",
+    },
+    {
+      label: "Bot tático",
+      value: "12d32d232d2d232d2d",
+    },
+  ];
+
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-300">
       <section className="col-span-9 bg-gray-300"></section>
       <section className="col-span-3 bg-gray-800">
         <form className="flex flex-col p-4 h-screen">
-          <div className="w-full h-full flex">
+          <div className="relative w-full">
+            <div
+              onClick={() => setOpen((prev) => !prev)}
+              className="flex items-center bg-gray-700 rounded-lg"
+            >
+              <span className="pl-3 pr-1">
+                <GoDependabot />
+              </span>
+              <div className="w-full px-2 py-3 focus:outline-none rounded-lg cursor-pointer">
+                {selected.label}
+              </div>
+            </div>
+
+            {open && (
+              <div
+                className={`${style.scroll2} absolute z-10 top-full left-0 bg-gray-700 w-full p-2 h-60 overflow-y-auto mt-1 rounded-lg`}
+              >
+                <div className="mb-2 border-b border-gray-400 pb-2">
+                  <input
+                    type="text"
+                    placeholder="Pesquisar"
+                    className="w-full p-2 rounded-md focus:outline-none bg-gray-600"
+                  />
+                </div>
+
+                {options.map((item, index) => (
+                  <ul key={index}>
+                    <li
+                      className={`${
+                        selected.value === item.value
+                          ? "bg-gray-500 cursor-not-allowed"
+                          : "hover:bg-gray-600 cursor-pointer"
+                      } p-2 rounded-lg mb-1`}
+                    >
+                      {item.label}
+                    </li>
+                  </ul>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="w-full h-full flex mt-4">
             <Editor
               height="98%"
               defaultLanguage="javascript"
               defaultValue="// Escreva seu código aqui"
-              theme='vs-dark'
+              theme="vs-dark"
               options={{
                 minimap: { enabled: false },
                 fontSize: 14,
-                lineNumbers: 'on',
-                wordWrap: 'on',
+                lineNumbers: "on",
+                wordWrap: "on",
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
               }}
             />
           </div>
 
-          <button className="bg-green-600 py-4 w-full flex justify-center items-center rounded-2xl">Salvar</button>
+          <button className="bg-green-600 py-4 w-full flex justify-center items-center rounded-2xl">
+            Salvar
+          </button>
         </form>
       </section>
     </main>
