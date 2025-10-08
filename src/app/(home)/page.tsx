@@ -6,7 +6,7 @@ import Editor from "@monaco-editor/react";
 import { useState } from "react";
 import { GoDependabot } from "react-icons/go";
 import style from "./style.module.css";
-import ModelPerson from "@/components/person";
+import Person from "@/components/person";
 
 export default function football() {
   const [open, setOpen] = useState(false);
@@ -30,11 +30,20 @@ export default function football() {
     <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
       <section className="col-span-9 px-2 flex flex-col justify-center bg-gray-950">
         <div
-          className={`${style.background} bg-gray-50 w-full aspect-[2048/1080] border-4 border-gray-700 rounded-2xl flex`}
+          className={`${style.background} relative bg-gray-50 w-full aspect-[2048/1080] border-4 border-gray-700 rounded-2xl flex justify-center items-center`}
         >
-          <div>
-            <ModelPerson src="/models/person2.glb" />
+          <div className={`${style.scale} absolute bg-[#934b225b]`}>
+            <Person
+              bgColor="#F00"
+              size={40}
+              name="Carlos A."
+              position={{
+                x: 50,
+                y: 50,
+              }}
+            />
           </div>
+          <div className={`${style.scale2} absolute bg-[#93228f5b]`}></div>
         </div>
       </section>
       <section className="col-span-3 bg-gray-800">

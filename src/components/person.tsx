@@ -1,16 +1,24 @@
-"use client";
-
-import "@google/model-viewer";
-
-export default function ModelPerson({ src }: { src: string }) {
+export default function Person({
+  bgColor,
+  name,
+  size,
+  position,
+}: {
+  size: number;
+  bgColor: string;
+  name: string;
+  position: { x: number; y: number };
+}) {
   return (
-    <model-viewer
-      src={src}
-      alt="Modelo 3D"
-      style={{ width: "70px", height: "70px", background: "transparent" }}
-      camera-controls={false}
-      auto-rotate={false}
-      disable-zoom
-    ></model-viewer>
+    <div
+      className="rounded-full absolute"
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: bgColor,
+        left: `${position.x}%`,
+        top: `${position.y}%`,
+      }}
+    ></div>
   );
 }
