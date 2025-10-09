@@ -26,24 +26,51 @@ export default function football() {
     },
   ];
 
+  const map = [32, 62];
+
+  const elementFixed = [
+    {
+      x: 0,
+      y: 0,
+      element: <div className="bg-gray-950 w-full h-full"></div>,
+    },
+  ];
+
+  const getElement = (x: number, y: number) => {
+    const elem = elementFixed.filter(
+      (item) => item.x === x && item.y === y && item
+    );
+    if (elem.length) {
+      return elem[0].element;
+    }
+
+    return null;
+  };
+
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
       <section className="col-span-9 px-2 flex flex-col justify-center bg-gray-950">
         <div
-          className={`${style.background} relative bg-gray-50 w-full aspect-[2048/1080] border-4 border-gray-700 rounded-2xl flex justify-center items-center`}
+          className={`relative bg-gray-300 w-full aspect-[2048/1080] border-4 border-gray-700 flex justify-center items-center`}
         >
-          <div className={`${style.scale} absolute bg-[#934b225b]`}>
-            <Person
-              bgColor="#F00"
-              size={40}
-              name="Carlos A."
-              position={{
-                x: 50,
-                y: 50,
-              }}
-            />
+          <div className="w-full h-full flex justify-center items-center flex-col">
+            {Array(map[0])
+              .fill("")
+              .map((item, i1) => (
+                <div key={i1} className="flex w-full h-full">
+                  {Array(map[1])
+                    .fill("")
+                    .map((item, i2) => (
+                      <div
+                        key={i2}
+                        className="border border-gray-200 h-full w-full"
+                      >
+                        {getElement(i1, i2) !== null && getElement(i1, i2)}
+                      </div>
+                    ))}
+                </div>
+              ))}
           </div>
-          <div className={`${style.scale2} absolute bg-[#93228f5b]`}></div>
         </div>
       </section>
       <section className="col-span-3 bg-gray-800">

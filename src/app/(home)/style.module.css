@@ -17,27 +17,3 @@
   background-color: black;
   border-radius: 10px;
 }
-
-.background {
-  background-image: url("/background.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
-}
-
-.scale {
-  transform: perspective(1370px) rotateX(50deg) scaleX(1.15) scaleY(1.15);
-  transform-origin: bottom;
-  width: 100%;
-  height: 200%;
-  margin-top: -805px;
-  margin-left: -5px;
-}
-
-.scale2 {
-  transform: perspective(1370px) rotateX(50deg) scaleX(0.98) scaleY(0.925);
-  transform-origin: bottom;
-  width: 100%;
-  height: 200%;
-  margin-top: -875px;
-  margin-left: -5px;
-}
