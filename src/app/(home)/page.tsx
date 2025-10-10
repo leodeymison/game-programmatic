@@ -41,12 +41,13 @@ export default function football() {
     return null;
   };
 
-  const person = (y: number, x: number) => {
-    const position = {px: 3, py: 3}
+  const person = (y: number, x: number, id: string) => {
+    const position = {px: 3, py: 10}
     if (position.px === x && position.py === y) {
-      return <div className="w-full h-full">
-        <div className="flex justify-center items-center">
-          <BiSolidBalloon size={20} color="#F00" />
+      return <div className="w-full h-full relative" id={id}>
+        <div className="flex justify-end items-center">
+          <BiSolidBalloon className={`${style.icon}`} size={20} color="#F00" />
+          <div className={`${style.aim} absolute w-20 h-3/4 left-full rounded-l-full`}></div>
         </div>
       </div>
     }
@@ -86,8 +87,8 @@ export default function football() {
                         className="border border-gray-200 h-full w-full"
                       >
                         {
-                          person(i1, i2) !== null ? 
-                            person(i1, i2) :
+                          person(i1, i2, "") !== null ? 
+                            person(i1, i2, "") :
                             getElement(i1, i2) !== null && getElement(i1, i2)
                         }
                       </div>
