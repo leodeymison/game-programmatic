@@ -3,10 +3,9 @@
 "use client";
 
 import Editor from "@monaco-editor/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoDependabot } from "react-icons/go";
 import style from "./style.module.css";
-import Person from "@/components/person";
 import { elementFixed } from "./data/fixed";
 import { mapDimension } from "./data/mapDimensions";
 import { BiSolidBalloon } from "react-icons/bi";
@@ -45,7 +44,7 @@ export default function football() {
   const person = (y: number, x: number) => {
     const position = {px: 3, py: 3}
     if (position.px === x && position.py === y) {
-      return <div className="w-full h-full relative">
+      return <div className="w-full h-full">
         <div className="flex justify-center items-center">
           <BiSolidBalloon size={20} color="#F00" />
         </div>
@@ -54,6 +53,19 @@ export default function football() {
 
     return null;
   }
+
+  const addDirection = (key: "ArrowUp" | "ArrowRight" | "ArrowDown" | "ArrowLeft") => {
+    
+  }
+
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      console.log(e.code)
+    })
+    document.addEventListener("keyup", (e) => {
+      console.log(e.code)
+    })
+  }, []);
 
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
