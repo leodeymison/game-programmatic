@@ -7,6 +7,9 @@ import { useState } from "react";
 import { GoDependabot } from "react-icons/go";
 import style from "./style.module.css";
 import Person from "@/components/person";
+import { elementFixed } from "./data/fixed";
+import { mapDimension } from "./data/mapDimensions";
+import { BiSolidBalloon } from "react-icons/bi";
 
 export default function football() {
   const [open, setOpen] = useState(false);
@@ -26,26 +29,29 @@ export default function football() {
     },
   ];
 
-  const map = [32, 62];
-
-  const elementFixed = [
-    {
-      x: 0,
-      y: 0,
-      element: <div className="bg-gray-950 w-full h-full"></div>,
-    },
-  ];
-
-  const getElement = (x: number, y: number) => {
-    const elem = elementFixed.filter(
+  const getElement = (y: number, x: number) => {
+    const elem = elementFixed[0]().filter(
       (item) => item.x === x && item.y === y && item
     );
     if (elem.length) {
-      return elem[0].element;
+      return <div className="bg-gray-950 w-full h-full"></div>
     }
 
     return null;
   };
+
+  const person = (y: number, x: number) => {
+    const position = {px: 3, py: 3}
+    if (position.px === x && position.py === y) {
+      return <div className="w-full h-full relative">
+        <div>
+          <BiSolidBalloon color="#F00" />
+        </div>
+      </div>
+    }
+
+    return null;
+  }
 
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
@@ -54,17 +60,18 @@ export default function football() {
           className={`relative bg-gray-300 w-full aspect-[2048/1080] border-4 border-gray-700 flex justify-center items-center`}
         >
           <div className="w-full h-full flex justify-center items-center flex-col">
-            {Array(map[0])
+            {Array(mapDimension[0])
               .fill("")
               .map((item, i1) => (
                 <div key={i1} className="flex w-full h-full">
-                  {Array(map[1])
+                  {Array(mapDimension[1])
                     .fill("")
                     .map((item, i2) => (
                       <div
                         key={i2}
                         className="border border-gray-200 h-full w-full"
                       >
+                        {person(i1, i2) !== null && person(i1, i2)}
                         {getElement(i1, i2) !== null && getElement(i1, i2)}
                       </div>
                     ))}

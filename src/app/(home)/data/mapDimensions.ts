@@ -1,0 +1,1 @@
+export const mapDimension = [32, 62];
