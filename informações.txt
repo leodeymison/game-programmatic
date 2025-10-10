@@ -1,0 +1,3 @@
+- Quanto mais tempo eu segurar na seta, mais longe o balão vai
+- Quando mais tempo eu segurar no seta + space, mais longe vai o tiro de alfinete
+- Quanto mais tempo eu segurar a seta + C, mais longe vai a caixa de impedimento
