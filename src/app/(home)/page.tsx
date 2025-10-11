@@ -10,7 +10,6 @@ import style from "./style.module.css";
 import { elementFixed } from "./data/fixed";
 import { mapDimension } from "./data/mapDimensions";
 import { BiSolidBalloon } from "react-icons/bi";
-import { io } from "socket.io-client";
 
 type player = {
   id: string;
