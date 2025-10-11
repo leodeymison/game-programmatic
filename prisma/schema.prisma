@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  name String
+  email String
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  bots Bot[]
+  UserMatch UserMatch[]
+  Wallet Wallet?
+  shop Shop[]
+  deposits Deposit[]
+  withdrawals Withdraw[]
+
+  @@map("user")
+}
+
+
+model Deposit {
+  id String @id @default(uuid())
+
+  price String
+  status String
+
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("deposit")
+}
+
+model Withdraw {
+  id String @id @default(uuid())
+
+  price String
+  status String
+
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("withdraw")
+}
+
+model Wallet {
+  id String @id @default(uuid())
+
+  value String
+
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("wallet")
+}
+
+model Shop {
+  id String @id @default(uuid())
+
+  value String
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  botId String
+  bot Bot @relation(fields: [botId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("shop")
+}
+
+model Bot {
+  id String @id @default(uuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userMatch UserMatch[]
+  Shop Shop[]
+
+  @@map("bot")
+}
+
+enum MatchType {
+  SOLO  
+}
+
+model Match {
+  id String @id @default(uuid())
+
+  price Boolean
+  type MatchType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("match")
+}
+
+model UserMatch {
+  id String @id @default(uuid())
+
+  color String
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  
+  botId String?
+  bot Bot? @relation(fields: [botId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("user_match")
+}
