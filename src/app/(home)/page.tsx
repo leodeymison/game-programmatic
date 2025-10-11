@@ -1,21 +1,92 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import Editor from "@monaco-editor/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoDependabot } from "react-icons/go";
 import style from "./style.module.css";
 import { elementFixed } from "./data/fixed";
 import { mapDimension } from "./data/mapDimensions";
 import { BiSolidBalloon } from "react-icons/bi";
+import { io } from "socket.io-client";
+
+type player = {
+  id: string;
+  name: string;
+  color: string;
+  position: { x: number, y: number },
+  rotation: "left" | "top" | "right" | "bottom"
+}
 
 export default function football() {
-  const [open, setOpen] = useState(false);
+  const wsRef = useRef<WebSocket | null>(null);
+
+  // SERVER
+  const [playerYou, setPlayerYou] = useState<player | null>(null);
+  const [players, setPlayers] = useState<Array<player>>([])
   const [selected, useSelected] = useState({
     label: "Bot padrão",
     value: "default",
   });
+
+  // CLIENT
+  const [socket, setSocket] = useState<any>(null);
+  const [aim, setAim] = useState<number>(0);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
+    wsRef.current = ws;
+
+
+    ws.onopen = () => {
+      console.log("Conectado")
+    };
+
+    ws.onclose = () => {
+      console.log("Desconectado")
+    };
+
+    ws.onmessage = (event) => {
+      console.log("mensagem enviada")
+    };
+
+    const pingInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(`{"event":"ping"}`);
+      }
+    }, 29000);
+
+    return () => {
+      clearInterval(pingInterval);
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, [])
+
+  useEffect(() => {
+    setPlayerYou({
+      id: "123",
+      name: "Você",
+      color: "#F00000",
+      position: { x: 3, y: 10 },
+      rotation: "right"
+    })
+
+    setPlayers([
+      {
+        id: "123",
+        color: "#0d6d00",
+        name: "ANDroid010",
+        position: { x: 10, y: 20 },
+        rotation: "top"
+      }
+    ])
+  }, [])
 
   const options = [
     {
@@ -41,18 +112,20 @@ export default function football() {
     return null;
   };
 
-  const person = (y: number, x: number, id: string) => {
-    const position = {px: 3, py: 10}
-    if (position.px === x && position.py === y) {
-      return <div className="w-full h-full relative" id={id}>
-        <div className="flex justify-end items-center">
-          <BiSolidBalloon className={`${style.icon}`} size={20} color="#F00" />
-          <div className={`${style.aim} absolute w-20 h-3/4 left-full rounded-l-full`}></div>
-        </div>
+  const playerRender = (
+    current: { y: number, x: number },
+    player: player
+  ) => {
+    if(current.x === player.position.x && current.y === player.position.y){
+      return <div key={player.id} className="w-full h-full relative" id={player.id}>
+      <div className="flex justify-end items-center">
+        <BiSolidBalloon className={`${style.icon}`} size={20} color={player.color} />
+        <div style={{
+          backgroundImage: `linear-gradient(to right, ${player.color}a0, ${player.color}33)`
+        }} className="absolute w-20 h-3/4 left-full rounded-l-full"></div>
       </div>
+    </div>
     }
-
-    return null;
   }
 
   const addDirection = (key: "ArrowUp" | "ArrowRight" | "ArrowDown" | "ArrowLeft") => {
@@ -61,10 +134,10 @@ export default function football() {
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
-      console.log(e.code)
+      // console.log(e.code)
     })
     document.addEventListener("keyup", (e) => {
-      console.log(e.code)
+      // console.log(e.code)
     })
   }, []);
 
@@ -86,10 +159,21 @@ export default function football() {
                         key={i2}
                         className="border border-gray-200 h-full w-full"
                       >
+                        {/* FIXED */}
+                        {getElement(i1, i2) !== null && getElement(i1, i2)}
+
+                        {/* YOU PLAYER */}
                         {
-                          person(i1, i2, "") !== null ? 
-                            person(i1, i2, "") :
-                            getElement(i1, i2) !== null && getElement(i1, i2)
+                          playerYou && (
+                            playerRender({ y: i1, x: i2 }, playerYou)
+                          )
+                        }
+
+                        {/* PLAYERS */}
+                        {
+                          players.map(player => (
+                            playerRender({ y: i1, x: i2 }, player)
+                          ))
                         }
                       </div>
                     ))}

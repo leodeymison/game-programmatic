@@ -46,7 +46,3 @@
     transform: scaleY(1.4);
   }
 }
-
-.aim {
-  background-image: linear-gradient(to right, rgba(248, 56, 56, 0.631), rgba(248, 56, 56, 0.203));
-}
