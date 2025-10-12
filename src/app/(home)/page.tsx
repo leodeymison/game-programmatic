@@ -16,14 +16,22 @@ type player = {
   name: string;
   color: string;
   position: { x: number, y: number },
-  rotation: "left" | "top" | "right" | "bottom"
+  rotation: "ArrowLeft" | "ArrowUp" | "ArrowRight" | "ArrowDown"
 }
+
+const moveOptions = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"];
 
 export default function football() {
   const wsRef = useRef<WebSocket | null>(null);
 
   // SERVER
-  const [playerYou, setPlayerYou] = useState<player | null>(null);
+  const [playerYou, setPlayerYou] = useState<player | null>({
+    id: "123",
+    name: "Você",
+    color: "#F00000",
+    position: { x: 3, y: 10 },
+    rotation: "ArrowUp"
+  });
   const [players, setPlayers] = useState<Array<player>>([])
   const [selected, useSelected] = useState({
     label: "Bot padrão",
@@ -67,24 +75,57 @@ export default function football() {
     };
   }, [])
 
-  useEffect(() => {
-    setPlayerYou({
-      id: "123",
-      name: "Você",
-      color: "#F00000",
-      position: { x: 3, y: 10 },
-      rotation: "right"
-    })
+  const movePlayer = (player: player, direction: player["rotation"]) => {
+    let newPosition = player.position;
 
+    if(direction === "ArrowUp"){
+      newPosition.y -= 1;
+    }
+    if(direction === "ArrowDown"){
+      newPosition.y += 1;
+    }
+    if(direction === "ArrowLeft"){
+      newPosition.x -= 1;
+    }
+    if(direction === "ArrowRight"){
+      newPosition.x += 1;
+    }
+
+    setPlayerYou({
+      ...player,
+      rotation: direction,
+      position: newPosition
+    })
+  }
+
+  const rotationPlayer = (player: player, direction: player["rotation"]) => {
+    setPlayerYou({
+      ...player,
+      rotation: direction,
+    })
+  }
+
+  useEffect(() => {
     setPlayers([
       {
         id: "123",
         color: "#0d6d00",
         name: "ANDroid010",
         position: { x: 10, y: 20 },
-        rotation: "top"
+        rotation: "ArrowUp"
       }
     ])
+
+    document.addEventListener("keydown", (e) => {
+      if(moveOptions.includes(e.key) && playerYou){
+        rotationPlayer(playerYou, e.key as any)
+      }
+    })
+    document.addEventListener("keyup", (e) => {
+      if(moveOptions.includes(e.key) && playerYou){
+        movePlayer(playerYou, e.key as any)
+      }
+    })
   }, [])
 
   const options = [
@@ -116,7 +157,21 @@ export default function football() {
     player: player
   ) => {
     if(current.x === player.position.x && current.y === player.position.y){
-      return <div key={player.id} className="w-full h-full relative" id={player.id}>
+      let rotation = "rotateZ(-90deg)"
+      if(player.rotation === "ArrowUp"){
+        rotation = "rotateZ(-90deg)"
+      }
+      if(player.rotation === "ArrowDown"){
+        rotation = "rotateZ(90deg)"
+      }
+      if(player.rotation === "ArrowLeft"){
+        rotation = "rotateZ(180deg)"
+      }
+      if(player.rotation === "ArrowRight"){
+        rotation = "rotateZ(0deg)"
+      }
+
+      return <div style={{ transform: rotation }} key={player.id} className="w-full h-full relative" id={player.id}>
       <div className="flex justify-end items-center">
         <BiSolidBalloon className={`${style.icon}`} size={20} color={player.color} />
         <div style={{
@@ -126,19 +181,6 @@ export default function football() {
     </div>
     }
   }
-
-  const addDirection = (key: "ArrowUp" | "ArrowRight" | "ArrowDown" | "ArrowLeft") => {
-    
-  }
-
-  useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      // console.log(e.code)
-    })
-    document.addEventListener("keyup", (e) => {
-      // console.log(e.code)
-    })
-  }, []);
 
   return (
     <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
