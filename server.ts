@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from 'node:url';
 import { createServer } from 'node:http';
@@ -7,6 +8,8 @@ import { Server as SocketIOServer } from 'socket.io';
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
+
+let players: Record<string, { x: number; y: number }> = {};
 
 nextApp.prepare().then(() => {
   // Cria o servidor HTTP padrão
@@ -27,8 +30,44 @@ nextApp.prepare().then(() => {
   io.on('connection', (socket: any) => {
     console.log('Novo cliente conectado:', socket.id);
 
-    socket.on('moviment', (data: any) => {
-      console.log('Movimentação recebida:', data);
+    players[socket.id] = { x: 0, y: 0 };
+
+    socket.on('move', (dir: string) => {
+      console.log('Movimentação recebida:', dir);
+      const player = players[socket.id];
+      if (!player) return;
+
+      switch (dir) {
+        case "ArrowLeft":
+          player.x -= 1;
+          break;
+        case "ArrowRight":
+          player.x += 1;
+          break;
+        case "ArrowUp":
+          player.y -= 1;
+          break;
+        case "ArrowDown":
+          player.y += 1;
+          break;
+      }
+
+      // Envia a nova posição só para o jogador
+      socket.emit("position", { userId: "123", position: player });
+
+      // Se quiser atualizar todos os outros:
+      // socket.broadcast.emit("playerMoved", { id: socket.id, ...player });
+    });
+
+    socket.on('rotate', (dir: string) => {
+      console.log('Rotate recebida:', dir);
+      
+
+      // Envia a nova posição só para o jogador
+      // socket.emit("rotate", player);
+
+      // Se quiser atualizar todos os outros:
+      // socket.broadcast.emit("playerMoved", { id: socket.id, ...player });
     });
 
     socket.on('disconnect', () => {
