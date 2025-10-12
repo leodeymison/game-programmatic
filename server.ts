@@ -1,53 +1,44 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from 'node:url';
-import { createServer, Server, IncomingMessage, ServerResponse } from 'node:http';
+import { createServer } from 'node:http';
 import next from 'next';
-import { WebSocket, WebSocketServer } from 'ws';
-import { Socket } from 'node:net';
+import { Server as SocketIOServer } from 'socket.io';
 
-const nextApp = next({ dev: process.env.NODE_ENV !== "production" });
+const dev = process.env.NODE_ENV !== 'production';
+const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
-const clients: Set<WebSocket> = new Set();
 
 nextApp.prepare().then(() => {
-  const server: Server = createServer((req: IncomingMessage, res: ServerResponse) => {
+  // Cria o servidor HTTP padrão
+  const server = createServer((req, res) => {
     handle(req, res, parse(req.url || '', true));
   });
 
-  const wss = new WebSocketServer({ noServer: true });
+  // Cria o servidor Socket.IO vinculado ao HTTP
+  const io = new SocketIOServer(server, {
+    path: '/api/socket',
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST'],
+    },
+  });
 
-  wss.on('connection', (ws: WebSocket) => {
-    clients.add(ws);
-    console.log('New client connected');
+  // Quando um novo cliente se conecta
+  io.on('connection', (socket: any) => {
+    console.log('Novo cliente conectado:', socket.id);
 
-    ws.on('message', (message: Buffer, isBinary: boolean) => {
-      console.log(`Message received: ${message}`);
-      clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && (message.toString() !== `{"event":"ping"}`)) {
-          client.send(message, { binary: isBinary });
-        }
-      });
-    })
-
-    ws.on('close', () => {
-      clients.delete(ws);
-      console.log('Client disconnected');
+    socket.on('moviment', (data: any) => {
+      console.log('Movimentação recebida:', data);
     });
-  })
 
-  server.on("upgrade", (req: IncomingMessage, socket: Socket, head: Buffer) => {
-    const { pathname } = parse(req.url || "/", true);
+    socket.on('disconnect', () => {
+      console.log('Cliente desconectado:', socket.id);
+    });
+  });
 
-    if (pathname === "/_next/webpack-hmr") {
-      nextApp.getUpgradeHandler()(req, socket, head);
-    }
-
-    if (pathname === "/api/ws") {
-      wss.handleUpgrade(req, socket, head, (ws) => {
-        wss.emit('connection', ws, req);
-      });
-    }
-  })
-
-  server.listen(3000);
-  console.log('Server listening on port 3000');
-})
+  // Inicia o servidor
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+  });
+});

@@ -18,7 +18,7 @@ model User {
   updatedAt DateTime @default(now())
 
   bots Bot[]
-  UserMatch UserMatch[]
+  UserRoom UserRoom[]
   Wallet Wallet?
   shop Shop[]
   deposits Deposit[]
@@ -98,29 +98,29 @@ model Bot {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  userMatch UserMatch[]
+  userRoom UserRoom[]
   Shop Shop[]
 
   @@map("bot")
 }
 
-enum MatchType {
+enum RoomType {
   SOLO  
 }
 
-model Match {
+model Room {
   id String @id @default(uuid())
 
   price Boolean
-  type MatchType
+  type RoomType
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@map("match")
+  @@map("room")
 }
 
-model UserMatch {
+model UserRoom {
   id String @id @default(uuid())
 
   color String
@@ -134,5 +134,5 @@ model UserMatch {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@map("user_match")
+  @@map("user_room")
 }

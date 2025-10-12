@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
@@ -10,6 +11,7 @@ import style from "./style.module.css";
 import { elementFixed } from "./data/fixed";
 import { mapDimension } from "./data/mapDimensions";
 import { BiSolidBalloon } from "react-icons/bi";
+import { io, Socket } from "socket.io-client";
 
 type player = {
   id: string;
@@ -19,10 +21,11 @@ type player = {
   rotation: "ArrowLeft" | "ArrowUp" | "ArrowRight" | "ArrowDown"
 }
 
-const moveOptions = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"];
+const moveOptions: Array<player["rotation"]> = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"];
 
 export default function football() {
-  const wsRef = useRef<WebSocket | null>(null);
+  const room = "123";
+  const socketRef = useRef<Socket | null>(null);
 
   // SERVER
   const [playerYou, setPlayerYou] = useState<player | null>({
@@ -43,40 +46,10 @@ export default function football() {
   const [aim, setAim] = useState<number>(0);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
-    wsRef.current = ws;
-
-
-    ws.onopen = () => {
-      console.log("Conectado")
-    };
-
-    ws.onclose = () => {
-      console.log("Desconectado")
-    };
-
-    ws.onmessage = (event) => {
-      console.log("mensagem enviada")
-    };
-
-    const pingInterval = setInterval(() => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(`{"event":"ping"}`);
-      }
-    }, 29000);
-
-    return () => {
-      clearInterval(pingInterval);
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, [])
-
-  const movePlayer = (player: player, direction: player["rotation"]) => {
-    let newPosition = player.position;
+  const movePlayer = (direction: player["rotation"]) => {
+    if(!playerYou?.position) return;
+    
+    const newPosition = playerYou?.position;
 
     if(direction === "ArrowUp"){
       newPosition.y -= 1;
@@ -91,12 +64,49 @@ export default function football() {
       newPosition.x += 1;
     }
 
-    setPlayerYou({
-      ...player,
-      rotation: direction,
-      position: newPosition
+    setPlayerYou((prev: any) => {
+      return ({
+        ...prev,
+        rotation: direction,
+        position: newPosition
+      });
     })
   }
+
+  useEffect(() => {
+    // Conecta ao socket da mesma origem (Next.js)
+    const socket = io({
+      path: "/api/socket",
+      transports: ["websocket"], // força uso do websocket puro
+    });
+
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("✅ Conectado ao servidor Socket.IO");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("❌ Desconectado do servidor Socket.IO");
+    });
+
+    socket.on("players", (content: player["position"]) => {
+      console.log("Recebi movimento")
+    });
+
+    // Mantém a conexão viva (equivalente ao seu ping)
+    const pingInterval = setInterval(() => {
+      if (socket.connected) {
+        socket.emit("ping");
+      }
+    }, 29000);
+
+    return () => {
+      clearInterval(pingInterval);
+      socket.off("moviment-receive");
+      socket.disconnect();
+    };
+  }, []);
 
   const rotationPlayer = (player: player, direction: player["rotation"]) => {
     setPlayerYou({
@@ -117,13 +127,15 @@ export default function football() {
     ])
 
     document.addEventListener("keydown", (e) => {
-      if(moveOptions.includes(e.key) && playerYou){
+      if(moveOptions.includes(e.key as any) && playerYou){
         rotationPlayer(playerYou, e.key as any)
       }
     })
     document.addEventListener("keyup", (e) => {
-      if(moveOptions.includes(e.key) && playerYou){
-        movePlayer(playerYou, e.key as any)
+      const key: player["rotation"] = e.key as any;
+      if(moveOptions.includes(key) && playerYou && socketRef.current){
+        movePlayer(key);
+        socketRef.current.emit("moviment", key);
       }
     })
   }, [])
