@@ -11,7 +11,8 @@ export default async function HomeServer(){
       color: "#0d6d00",
       name: "ANDroid010",
       position: { x: 1, y: 1 },
-      rotation: "ArrowUp"
+      rotation: "ArrowUp",
+      live: 1
     }
   ]
 
