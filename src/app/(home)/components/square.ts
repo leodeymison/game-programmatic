@@ -53,7 +53,7 @@ export const createBalloonElement = (
   const y = position.y * h + margin + h / 2;
   const balloonWidth = w * 0.6;
   const balloonHeight = h * 0.7;
-  const knotSize = h * 0.2;
+  const knotSize = h * 0.3;
 
   const rotationMap: Record<typeof rotation, number> = {
     ArrowUp: 0,
