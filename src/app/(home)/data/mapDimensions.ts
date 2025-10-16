@@ -1,1 +1,1 @@
-export const mapDimension = [32, 62]; // [33,57px, 33,03px]
+export const mapDimension: [number, number] = [32, 62]; // [33,57px, 33,03px]

@@ -1,6 +1,6 @@
 import { mapDimension } from "./mapDimensions";
 
-type positionsType = { x: number; y: number };
+export type positionsType = { x: number; y: number };
 
 export const elementFixed = [
   () => {

@@ -20,6 +20,7 @@ import { mapDimension } from "./data/mapDimensions";
 
 // Types
 import { bot, moveOptions, player, Room } from "./types";
+import Game from "./game";
 
 export default function HomeClient(
     { players, room, bots }: 
@@ -121,35 +122,9 @@ export default function HomeClient(
         <main className="w-full h-screen grid grid-cols-12 bg-gray-950">
         <section className="col-span-9 px-2 flex flex-col justify-center bg-gray-950">
             <div
-            className={`relative bg-gray-300 rounded-md w-full aspect-[2048/1080] border-2 flex justify-center items-center`}
+            className={`relative bg-gray-300 rounded-md w-full aspect-[2048/1080] flex justify-center items-center`}
             >
-                <div className="w-full h-full flex justify-center items-center flex-col">
-                    {Array(mapDimension[0])
-                    .fill("")
-                    .map((item, i1) => (
-                        <div key={i1} className="flex w-full h-full">
-                        {Array(mapDimension[1])
-                            .fill("")
-                            .map((item, i2) => (
-                            <div
-                                key={i2}
-                                className="border border-gray-200 h-full w-full"
-                            >
-                                {getElement(i1, i2) !== null && getElement(i1, i2)}
-                                {
-                                    players.map(player => {
-                                        if(player.position.x === i2 && player.position.y === i1){
-                                            return createPlayerRender(player)
-                                        }
-
-                                        return null;
-                                    })
-                                }
-                            </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
+                <Game />
             </div>
         </section>
         <section className="col-span-3 bg-gray-800">
