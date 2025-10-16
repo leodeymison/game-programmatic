@@ -11,7 +11,7 @@ export default function Game() {
   const refCanvas = useRef<HTMLCanvasElement | null>(null);
   const dimensions: [number, number] = [2048, 1080];
 
-  function renderScreen(ctx: CanvasRenderingContext2D, players: player){
+  function renderScreen(ctx: CanvasRenderingContext2D, you: player){
     // Limpa a tela
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -20,8 +20,17 @@ export default function Game() {
       createElementSquare(mapDimension, dimensions, ctx, item, "#301600")
     });
 
-    // Players
-    createBalloonElement(mapDimension, dimensions, ctx, players.position, "#0b8600")
+    // Players You
+    createBalloonElement(
+      mapDimension, 
+      dimensions, 
+      ctx, 
+      you.position, 
+      "#0b8600", 
+      you.rotation, 
+      you.name, 
+      you.live
+    )
   }
 
   useEffect(() => {
@@ -29,8 +38,9 @@ export default function Game() {
       {
         id: "123",
         color: "#0b8600",
-        name: "Meu players",
+        name: "Você",
         rotation: "ArrowUp",
+        live: 0.5,
         position: { x: 2, y: 2 }
       }
     ]
@@ -54,18 +64,22 @@ export default function Game() {
     document.addEventListener("keyup", (e) => {
       if(e.key === "ArrowUp"){
         players[0].position.y -= 1;
+        players[0].rotation = "ArrowUp";
         renderScreen(ctx, players[0]);
       }
       if(e.key === "ArrowDown"){
         players[0].position.y += 1;
+        players[0].rotation = "ArrowDown";
         renderScreen(ctx, players[0]);
       }
       if(e.key === "ArrowLeft"){
         players[0].position.x -= 1;
+        players[0].rotation = "ArrowLeft";
         renderScreen(ctx, players[0]);
       }
       if(e.key === "ArrowRight"){
         players[0].position.x += 1;
+        players[0].rotation = "ArrowRight";
         renderScreen(ctx, players[0]);
       }
     })

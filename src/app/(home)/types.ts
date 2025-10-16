@@ -4,6 +4,7 @@ export type player = {
     id: string;
     name: string;
     color: string;
+    live: number;
     position: { x: number, y: number },
     rotation: rotation
 }
