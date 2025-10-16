@@ -109,7 +109,7 @@ export const createBalloonElement = (
   const barY = y + balloonHeight / 2 + spacing;
 
   // fundo (vermelho escuro)
-  ctx.fillStyle = "#550000";
+  ctx.fillStyle = "#F00";
   ctx.fillRect(barX, barY, barWidth, barHeight);
 
   // vida (verde proporcional)

@@ -98,16 +98,16 @@ export default function Game() {
       // Calcula a nova posição
       switch (direction) {
         case "ArrowUp":
-          next.y -= 0.5;
+          next.y -= 1;
           break;
         case "ArrowDown":
-          next.y += 0.5;
+          next.y += 1;
           break;
         case "ArrowLeft":
-          next.x -= 0.5;
+          next.x -= 1;
           break;
         case "ArrowRight":
-          next.x += 0.5;
+          next.x += 1;
           break;
       }
     
