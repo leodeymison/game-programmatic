@@ -113,7 +113,6 @@ export default function Game() {
     
       // ⚠️ Verifica se a próxima posição colide com algo
       if (hasCollision(next)) {
-        // Travar o crescimento — encostou em um bloco
         growing = false;
         return; // para imediatamente aqui
       }
@@ -153,7 +152,7 @@ export default function Game() {
         const nextX = startX + deltaX * ease;
         const nextY = startY + deltaY * ease;
     
-        // ❌ Se detectar colisão, cancela o movimento
+        // Se detectar colisão, cancela o movimento
         if (hasCollision({ x: nextX, y: nextY })) {
           isMoving = false;
           return;
@@ -174,8 +173,7 @@ export default function Game() {
       requestAnimationFrame(step);
     }
 
-    /** Evento: tecla pressionada */
-    const Aim = (key: rotation, repeat: boolean) => {
+    const Aim = (key: rotation, repeat: boolean) => {isMoving
       // Ignora repetições automáticas do keydown
       if (repeat) return;
       if (isMoving) return;
@@ -215,6 +213,7 @@ export default function Game() {
       }
     });
 
+    /** Evento: tecla pressionada */
     document.addEventListener("keydown", (e: any) => {
       const key: any = e.key;
       if(moveOptions.includes(key)){
@@ -226,7 +225,7 @@ export default function Game() {
   return (
     <canvas
       ref={refCanvas}
-      className="bg-gray-200 flex max-w-full max-h-full"
+      className="bg-gray-200 max-w-full max-h-full"
     ></canvas>
   );
 }
